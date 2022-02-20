@@ -1,11 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System.ComponentModel.DataAnnotations;
 
 namespace estoque_tek.Models
 {
     public class Contractor
     {
-        public string Id { get; set; }
-
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string ContractorId { get; set; }
 
         public string DisplayName { get; set; }
@@ -23,6 +25,6 @@ namespace estoque_tek.Models
 
         public string Uf { get; set; }
 
-        public string status { get; set; }
+        public bool Status { get; set; }
     }
 }

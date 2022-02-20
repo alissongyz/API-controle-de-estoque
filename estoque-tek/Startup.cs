@@ -1,3 +1,5 @@
+using estoque_tek.Domains.Interfaces;
+using estoque_tek.Domains.Repositories;
 using estoque_tek.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,6 +36,12 @@ namespace estoque_tek
                 var setting = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
                 return new MongoClient(setting.ConnectionString);
             });
+
+            // Config de repositorys
+            services.AddSingleton<IContractorRepository, ContractorRepository>();
+
+            // Config AutoMapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
