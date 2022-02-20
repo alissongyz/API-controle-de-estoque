@@ -2,8 +2,6 @@
 {
     public class Product
     {
-        public string ProductId { get; set; }
-
         public string ContractorId { get; set; }
 
         public string Category { get; set; }
