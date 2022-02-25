@@ -59,7 +59,7 @@ namespace estoque_tek.Web.Controllers
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContractorInputModel))]
-        public async Task<ActionResult> CreateContractor([FromBody] ContractorInputModel contractorInputModel)
+        public async Task<ActionResult> CreateContractor([FromForm] ContractorInputModel contractorInputModel)
         {
             Contractor contractor = this.mapper.Map<Contractor>(contractorInputModel);
 
@@ -71,7 +71,7 @@ namespace estoque_tek.Web.Controllers
         [HttpPut]
         [Route("{contractorId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContractorInputModel))]
-        public async Task<ActionResult> UpdateContractor(string contractorId, [FromBody] ContractorInputModel contractorInputModel)
+        public async Task<ActionResult> UpdateContractor(string contractorId, [FromForm] ContractorInputModel contractorInputModel)
         {
             var contractor = await this.contractorRepository.GetOneAsync(contractorId);
             

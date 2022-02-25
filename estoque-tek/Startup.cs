@@ -39,6 +39,7 @@ namespace estoque_tek
 
             // Config de repositorys
             services.AddSingleton<IContractorRepository, ContractorRepository>();
+            services.AddSingleton<IUsersRepository, UsersRepository>();
 
             // Config AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
