@@ -14,5 +14,9 @@ namespace estoque_tek.Domains.Types
         // Users 
         [Description("User not found")]
         UserNotFound = 10,
+
+        // Product
+        [Description("Product not found")]
+        ProductNotFound = 20,
     }
 }

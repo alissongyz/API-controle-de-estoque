@@ -31,15 +31,17 @@ namespace estoque_tek
         public void ConfigureServices(IServiceCollection services)
         {
             // Config MongoDb
-            services.AddSingleton<IMongoClient>(ServiceProvider =>
+            var mongoSettings = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
+            /*services.AddSingleton<IMongoClient>(ServiceProvider =>
             {
                 var setting = Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
                 return new MongoClient(setting.ConnectionString);
-            });
+            });*/
 
             // Config de repositorys
             services.AddSingleton<IContractorRepository, ContractorRepository>();
             services.AddSingleton<IUsersRepository, UsersRepository>();
+            services.AddSingleton<IProductRepository, ProductRepository>();
 
             // Config AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
