@@ -4,6 +4,7 @@ using estoque_tek.Domains.Models;
 using estoque_tek.Domains.Types;
 using estoque_tek.Models;
 using estoque_tek.Web.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace estoque_tek.Web.Controllers
 {
     [ApiController]
-    [Route("v1/contractor")]
+    [Route("v1/Contractor")]
     public class UserController : ControllerBase
     {
         private readonly IMapper mapper;
@@ -103,7 +104,7 @@ namespace estoque_tek.Web.Controllers
 
             var existingUser = mapper.Map<User>(userInputModel);
 
-            existingUser.ContractorId = userId;
+            existingUser.UserId = userId;
 
             await usersRepository.UpdateAsync(existingUser);
 
