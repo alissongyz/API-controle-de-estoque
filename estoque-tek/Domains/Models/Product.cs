@@ -1,7 +1,13 @@
-﻿namespace estoque_tek.Models
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace estoque_tek.Models
 {
     public class Product
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string ProductId { get; set; }
         public string ContractorId { get; set; }
 
         public string Category { get; set; }
