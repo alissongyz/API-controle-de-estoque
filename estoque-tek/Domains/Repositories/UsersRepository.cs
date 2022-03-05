@@ -83,5 +83,12 @@ namespace estoque_tek.Domains.Repositories
             var filter = filterBuilder.Eq(user => user.UserId, user.UserId);
             await collection.ReplaceOneAsync(filter, user);
         }
+
+        public async Task<User> GetOneUserAsync(string contractorId, string userName, string password)
+        {
+            var filter = filterBuilder.Where(x => x.ContractorId == contractorId && x.UserName == userName && x.Password == password);
+
+            return await collection.Find(filter).SingleOrDefaultAsync();
+        }
     }
 }

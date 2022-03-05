@@ -4,6 +4,7 @@ using estoque_tek.Domains.Models;
 using estoque_tek.Domains.Types;
 using estoque_tek.Models;
 using estoque_tek.Web.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -28,12 +29,14 @@ namespace estoque_tek.Web.Controllers
 
         [HttpGet]
         [Route("Count")]
+        [Authorize(Roles = "boss")]
         public async Task<IActionResult> Count()
         {
             return Ok(await this.contractorRepository.CountAsync());
         }
 
         [HttpGet]
+        [Authorize(Roles = "boss")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContractorOutputModel))]
         public async Task<ActionResult> GetAllContractors(string displayName, string cnpj, int? page)
         {
@@ -43,6 +46,7 @@ namespace estoque_tek.Web.Controllers
 
         [HttpGet]
         [Route("{contractorId}")]
+        [Authorize(Roles = "boss")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContractorOutputModel))]
         public async Task<ActionResult> GetOneContractor(string contractorId)
         {
@@ -58,6 +62,7 @@ namespace estoque_tek.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "boss")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContractorInputModel))]
         public async Task<ActionResult> CreateContractor([FromForm] ContractorInputModel contractorInputModel)
         {
@@ -70,6 +75,7 @@ namespace estoque_tek.Web.Controllers
 
         [HttpPut]
         [Route("{contractorId}")]
+        [Authorize(Roles = "boss")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ContractorInputModel))]
         public async Task<ActionResult> UpdateContractor(string contractorId, [FromForm] ContractorInputModel contractorInputModel)
         {
@@ -92,6 +98,7 @@ namespace estoque_tek.Web.Controllers
 
         [HttpDelete]
         [Route("{contractorId}")]
+        [Authorize(Roles = "boss")]
         public async Task<ActionResult> DeleteContractor(string contractorId)
         {
             var contractor = await contractorRepository.GetOneAsync(contractorId);

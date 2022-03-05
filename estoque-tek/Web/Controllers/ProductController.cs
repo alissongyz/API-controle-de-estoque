@@ -4,6 +4,7 @@ using estoque_tek.Domains.Models;
 using estoque_tek.Domains.Types;
 using estoque_tek.Models;
 using estoque_tek.Web.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace estoque_tek.Web.Controllers
 
         [HttpGet]
         [Route("{contractorId}/Products/Count")]
+        [Authorize(Roles = "user")]
         public async Task<ActionResult> Count(string contractorId)
         {
             var contractor = await contractorRepository.GetOneAsync(contractorId);
@@ -44,6 +46,7 @@ namespace estoque_tek.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "user")]
         [Route("{contractorId}/Products")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductOutputModel))]
         public async Task<ActionResult> Get(string contractorId, string productName, string category, int? page)
@@ -61,6 +64,7 @@ namespace estoque_tek.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "user")]
         [Route("Product/{productId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductOutputModel))]
         public async Task<ActionResult> GetOneUser(string productId)
@@ -77,6 +81,7 @@ namespace estoque_tek.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [Route("Product")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductInputModel))]
         public async Task<ActionResult> CreateContractor([FromForm] ProductInputModel productInputModel)
@@ -89,6 +94,7 @@ namespace estoque_tek.Web.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "admin")]
         [Route("Product/{productId}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductInputModel))]
         public async Task<ActionResult> Update(string productId, [FromForm] ProductInputModel productInputModel)
@@ -111,6 +117,7 @@ namespace estoque_tek.Web.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "admin")]
         [Route("Product/{productId}")]
         public async Task<ActionResult> Delete(string productId)
         {
