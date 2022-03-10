@@ -10,6 +10,7 @@ namespace estoque_tek.Web.AutoMapper
         {
             CreateMap<UserOutputModel, User>();
             CreateMap<UserInputModel, User>();
+            CreateMap<LoginUserDtoInputModel, User>();
         }
     }
 }

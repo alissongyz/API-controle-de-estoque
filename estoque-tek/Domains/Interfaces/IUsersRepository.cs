@@ -12,6 +12,8 @@ namespace estoque_tek.Domains.Interfaces
 
         Task<User> GetOneAsync(string userId);
 
+        Task<User> GetOneUserAsync(string contractorId, string userName, string password);
+
         Task CreateAsync(User user);
 
         Task UpdateAsync(User user);

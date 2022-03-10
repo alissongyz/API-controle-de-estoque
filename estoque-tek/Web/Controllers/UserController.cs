@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using estoque_tek.Domains.Interfaces;
 using estoque_tek.Domains.Models;
+using estoque_tek.Domains.Services;
 using estoque_tek.Domains.Types;
 using estoque_tek.Models;
 using estoque_tek.Web.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace estoque_tek.Web.Controllers
@@ -29,29 +31,62 @@ namespace estoque_tek.Web.Controllers
             this.contractorRepository = contractorRepository;
         }
 
-        [HttpGet]
-        [Route("{contractorId}/Users/Count")]
-        public async Task<ActionResult> Count(string contractorId)
+        [HttpPost]
+        [Route("login")]
+        [AllowAnonymous]
+        public async Task<ActionResult<dynamic>> Authenticate([FromBody] LoginUserDtoInputModel loginUserDtoInputModel)
         {
-            var contractor = await contractorRepository.GetOneAsync(contractorId);
+            // Recuperando o usuário
+            var user = await usersRepository.GetOneUserAsync(loginUserDtoInputModel.ContractorId, loginUserDtoInputModel.UserName, loginUserDtoInputModel.Password);
 
-            if (contractor == null)
+            if (user == null)
             {
                 var notFound = Result.BuildNotFoundResult(ErrorCodeType.ContractorNotFound);
                 return StatusCode((int)notFound.StatusCode, notFound);
             }
 
+            // Gerando o Token ao acessar
+            var token = TokenService.GenerateToken(user);
+
+            // Ocultando a senha
+            user.Password = "";
+
+            // Retornando os dados
+            return new
+            {
+                user = user,
+                token = token
+            };
+        }
+
+        [HttpGet]
+        [Route("{contractorId}/Users/Count")]
+        [Authorize(Roles = "user")]
+        public async Task<ActionResult> Count(string contractorId)
+        {
+            // Buscando contratante
+            var user = await contractorRepository.GetOneAsync(contractorId);
+
+            // Verificando se o contratante é nulo
+            if (user == null)
+            {
+                var notFound = Result.BuildNotFoundResult(ErrorCodeType.ContractorNotFound);
+                return StatusCode((int)notFound.StatusCode, notFound);
+            }
+
+            // Retornando a quantidade de users por contratante
             return Ok(await this.usersRepository.CountAsync(contractorId));
         }
 
         [HttpGet]
         [Route("{contractorId}/Users")]
+        [Authorize(Roles = "user")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserOutputModel))]
         public async Task<ActionResult> Get(string contractorId, string userName, int? page)
         {
-            var contractor = await contractorRepository.GetOneAsync(contractorId);
+            var user = await contractorRepository.GetOneAsync(contractorId);
 
-            if (contractor == null)
+            if (user == null)
             {
                 var notFound = Result.BuildNotFoundResult(ErrorCodeType.ContractorNotFound);
                 return StatusCode((int)notFound.StatusCode, notFound);
@@ -63,6 +98,7 @@ namespace estoque_tek.Web.Controllers
 
         [HttpGet]
         [Route("users/{userId}")]
+        [Authorize(Roles = "user")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserOutputModel))]
         public async Task<ActionResult> GetOneUser(string userId)
         {
@@ -78,7 +114,8 @@ namespace estoque_tek.Web.Controllers
         }
 
         [HttpPost]
-        [Route("user")]
+        [Authorize(Roles = "admin")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserInputModel))]
         public async Task<ActionResult> CreateContractor([FromForm] UserInputModel userInputModel)
         {
@@ -91,6 +128,7 @@ namespace estoque_tek.Web.Controllers
 
         [HttpPut]
         [Route("user/{userId}")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserInputModel))]
         public async Task<ActionResult> Update(string userId, [FromForm] UserInputModel userInputModel)
         {
@@ -113,6 +151,7 @@ namespace estoque_tek.Web.Controllers
 
         [HttpDelete]
         [Route("user/{userId}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult> Delete(string userId)
         {
             var user = await usersRepository.GetOneAsync(userId);
